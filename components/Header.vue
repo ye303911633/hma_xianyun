@@ -22,29 +22,38 @@
         >{{item.title}}</nuxt-link>
       </el-row>
 
-      <!-- 登录/用户信息 -->
+     <!-- 登录/用户信息  -->
       <el-row type="flex" align="middle">
-        <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-        <el-dropdown v-if="false">
-          <el-row type="flex" align="middle" class="el-dropdown-link">
-            <nuxt-link to="#">
-              <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" />
-              用户名
-            </nuxt-link>
-            <i class="el-icon-caret-bottom el-icon--right"></i>
-          </el-row>
+        <!-- 消息 -->
+        <el-dropdown class="message">
+          <span class="el-dropdown-link">
+            <i class="el-icon-bell"></i>
+            消息
+            <i class="el-icon-caret-bottom"></i>
+          </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>消息</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <!-- 如果用户已登录，则显示 用户信息-->
+        <el-dropdown v-if="loginStatu" class="account">
+          <span class="el-dropdown-link">
+            <img :src="$axios.defaults.baseURL+userInfo.defaultAvatar" alt />
+            {{ userInfo.nickname }}
+            <i class="el-icon-caret-bottom"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <!-- 链接 -->
             <el-dropdown-item>
               <nuxt-link to="#">个人中心</nuxt-link>
             </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="handleLogout">退出</div>
+            <el-dropdown-item >
+              <div class="logout" @click="handlerLogout">退出</div>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-
-        <!-- 不存在用户信息展示登录注册链接 -->
-        <nuxt-link to="/user/login" class="account-link" v-else>登录 / 注册</nuxt-link>
+        <!-- 没有登录，则显示登录/注册 -->
+        <nuxt-link to="/user/login" class="login-link" v-else>登录 / 注册</nuxt-link>
       </el-row>
     </el-row>
   </header>
@@ -74,7 +83,25 @@ export default {
       current: "/"
     };
   },
-  methods: {},
+  methods: {
+     // 退出登录
+    handlerLogout() {
+      // 删除登录信息,变更到store
+      this.$store.commit('user/setUserInfo', {})
+    }
+  },
+  computed: {
+    // 登录状态
+    loginStatu() {
+      if(this.$store.state.user.userInfo.token) {
+        this.userInfo = this.$store.state.user.userInfo.user
+        return true
+      }else {
+        return false
+      }
+      // return this.$store.state.user.userInfo.token 
+    }
+  },
   watch: {
     $route(a) {
       this.current = a.path;
@@ -132,7 +159,27 @@ export default {
     }
   }
 
+// 登录 / 个人信息
   .message {
+    margin-right: 15px;
+  }
+  .account {
+    margin-left: 20px;
+    img {
+      vertical-align: middle;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+    }
+  }
+  .login-link {
+    font-size: 13px;
+    &:hover {
+      color: #409eff;
+      text-decoration: underline; 
+    }
+  }
+  /* .message {
     height: 36px;
     line-height: 1;
     cursor: pointer;
@@ -140,7 +187,7 @@ export default {
       margin-right: 2px;
       font-size: 18px;
     }
-  }
+  } */
 
   .el-dropdown-link {
     margin-left: 20px;
