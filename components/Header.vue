@@ -107,6 +107,9 @@ export default {
       this.current = a.path;
       console.log(this.current);
     }
+  },
+  mounted(){
+   console.log(process.env);
   }
 };
 </script>

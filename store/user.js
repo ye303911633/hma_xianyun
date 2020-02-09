@@ -22,15 +22,40 @@ export const mutations = {
 };
 
 export const actions = {
+    // 登录
     login({commit}, data){
         return this.$axios({
             url: "/accounts/login",
             method: "POST",
-            data: data
+            data
         }).then(res=>{
             const data = res.data;
             commit('setUserInfo', data)
             return data;
+        })
+    },
+
+    // 注册
+    register(store, data){
+        return this.$axios({
+            url: "/accounts/register",
+            method: 'POST',
+            data
+        }).then(res=>{
+            const data = res.data;
+            store.commit('setUserInfo', data)
+            return data;
+        })
+    },
+
+    // 验证码
+    sendCaptcha(store, data){
+        return this.$axios({
+            url: '/captchas',
+            method: 'POST',
+            data:{
+                tel: data
+            }
         })
     }
 };
