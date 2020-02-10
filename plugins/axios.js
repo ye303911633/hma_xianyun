@@ -1,4 +1,6 @@
-export default function ({ $axios, redirect }) {
+import { Message } from 'element-ui'
+
+/* export default function ({ $axios, redirect }) {
     $axios.onRequest(config => {
       console.log('Making request to ' + config.url)
     })
@@ -9,4 +11,14 @@ export default function ({ $axios, redirect }) {
         redirect('/400')
       }
     })
-  }
+  } */
+
+export default (data) => {
+  data.$axios.onError((err)=>{
+    const { statusCode, message } = err.response.data
+    // console.log(err.response);
+    if(statusCode === 400){
+      Message.error(message)
+    }
+  })    
+}
