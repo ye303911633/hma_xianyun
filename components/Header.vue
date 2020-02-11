@@ -87,7 +87,8 @@ export default {
      // 退出登录
     handlerLogout() {
       // 删除登录信息,变更到store
-      this.$store.commit('user/setUserInfo', {})
+      this.$store.commit('user/clearUserInfo')
+      localStorage.removeItem('store')
     }
   },
   computed: {

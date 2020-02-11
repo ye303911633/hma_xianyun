@@ -18,6 +18,12 @@ export const state = () => {
 export const mutations = {
     setUserInfo(state, data) {
         state.userInfo = data
+    },
+
+    clearUserInfo(state, data){
+        state.userInfo = {}
+       /*  localStorage.removeItem('store')
+        console.log(localStorage) */
     }
 };
 
