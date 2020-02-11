@@ -63,5 +63,24 @@ export const actions = {
                 tel: data
             }
         })
+    },
+
+
+    // 出发城市和到达城市
+    departCityAndDestCity(store, data){
+      return this.$axios({
+        url: '/airs/city',
+        params: {
+          name: data
+        }
+      }).then(res =>{
+        const {data} = res.data
+        // console.log(data)
+        const newData = data.map(item=>{
+          item.value = item.name.replace('市','')
+          return item;
+        })
+        return newData;
+      })
     }
 };
