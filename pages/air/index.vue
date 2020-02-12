@@ -1,38 +1,33 @@
 <template>
   <section class="container">
-    <h2 class="air-title"><span class="iconfont iconfeiji"></span>
+    <h2 class="air-title">
+      <span class="iconfont iconfeiji"></span>
       <i>国内机票</i>
     </h2>
 
     <!-- 搜索广告栏 -->
-    <el-row type="flex"
-            justify="space-between">
+    <el-row type="flex" justify="space-between">
       <!-- 搜索表单 -->
-      <!-- <div>搜索</div> -->
-      <SearchForm></SearchForm>
+      <SearchForm />
 
       <!-- banner广告 -->
       <div class="sale-banner">
-        <img src="http://157.122.54.189:9093/images/pic_sale.jpeg">
+        <img src="http://157.122.54.189:9093/images/pic_sale.jpeg" />
       </div>
     </el-row>
 
     <!-- 广告 -->
-    <el-row type="flex"
-            class="statement">
+    <el-row type="flex" class="statement">
       <el-col :span="8">
-        <i class="iconfont iconweibiaoti-_huabanfuben"
-           style="color:#409EFF;"></i>
+        <i class="iconfont iconweibiaoti-_huabanfuben" style="color:#409EFF;"></i>
         <span>100%航协认证</span>
       </el-col>
       <el-col :span="8">
-        <i class="iconfont iconbaozheng"
-           style="color:green;"></i>
+        <i class="iconfont iconbaozheng" style="color:green;"></i>
         <span>出行保证</span>
       </el-col>
       <el-col :span="8">
-        <i class="iconfont icondianhua"
-           style="color:#409EFF;"></i>
+        <i class="iconfont icondianhua" style="color:#409EFF;"></i>
         <span>7x24小时服务</span>
       </el-col>
     </el-row>
@@ -44,18 +39,43 @@
 
     <!-- 特价机票 -->
     <div class="air-sale">
-
+      <el-row type="flex" class="air-sale-pic" justify="space-between">
+        <el-col :span="6" v-for="(item, index) in sales" :key="index">
+          <nuxt-link
+            :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
+          >
+            <img :src="item.cover" />
+            <el-row class="layer-bar" type="flex" justify="space-between">
+              <span>{{item.departCity}}-{{item.destCity}}</span>
+              <span>￥{{item.price}}</span>
+            </el-row>
+          </nuxt-link>
+        </el-col>
+      </el-row>
     </div>
   </section>
 </template>
 
 <script>
-import SearchForm from '@/components/air/searchForm'
+import SearchForm from "@/components/air/searchForm";
 export default {
   components: {
     SearchForm
+  },
+  data(){
+    return {
+      sales: []
+    }
+  },
+  mounted(){
+    this.$axios({
+      url: '/airs/sale'
+    }).then(res => {
+      const { data } = res.data
+      this.sales = data
+    })
   }
-}
+};
 </script>
 
 <style scoped lang="less">
