@@ -1,54 +1,52 @@
 <template>
   <div class="search-form">
     <!-- 头部tab切换 -->
-    <el-row type="flex" class="search-tab">
-      <span
-        v-for="(item, index) in tabs"
-        :key="index"
-        @click="handleSearchTab(item, index)"
-        :class="{active: index === currentTab}"
-      >
+    <el-row type="flex"
+            class="search-tab">
+      <span v-for="(item, index) in tabs"
+            :key="index"
+            @click="handleSearchTab(item, index)"
+            :class="{active: index === currentTab}">
         <i :class="item.icon"></i>
         {{item.name}}
       </span>
     </el-row>
 
-    <el-form class="search-form-content" ref="form" label-width="80px">
+    <el-form class="search-form-content"
+             ref="form"
+             label-width="80px">
       <el-form-item label="出发城市">
         <!-- fetch-suggestions 返回输入建议的方法 -->
         <!-- select 点击选中建议项时触发 -->
-        <el-autocomplete
-          :fetch-suggestions="queryDepartSearch"
-          placeholder="请搜索出发城市"
-          v-model="form.departCity"
-          @select="handleDepartSelect"
-          @blur="handleDepartBlur"
-          class="el-autocomplete"
-        ></el-autocomplete>
+        <el-autocomplete :fetch-suggestions="queryDepartSearch"
+                         placeholder="请搜索出发城市"
+                         v-model="form.departCity"
+                         @select="handleDepartSelect"
+                         @blur="handleDepartBlur"
+                         class="el-autocomplete"></el-autocomplete>
       </el-form-item>
       <el-form-item label="到达城市">
-        <el-autocomplete
-          :fetch-suggestions="queryDestSearch"
-          placeholder="请搜索到达城市"
-          v-model="form.destCity"
-          @select="handleDestSelect"
-          @blur="handleDestBlur"
-          class="el-autocomplete"
-        ></el-autocomplete>
+        <el-autocomplete :fetch-suggestions="queryDestSearch"
+                         placeholder="请搜索到达城市"
+                         v-model="form.destCity"
+                         @select="handleDestSelect"
+                         @blur="handleDestBlur"
+                         class="el-autocomplete"></el-autocomplete>
       </el-form-item>
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
-        <el-date-picker
-          type="date"
-          placeholder="请选择日期"
-          style="width: 100%;"
-          v-model="form.departDate"
-          :picker-options="pickerOptions"
-          @change="handleDate"
-        ></el-date-picker>
+        <el-date-picker type="date"
+                        placeholder="请选择日期"
+                        style="width: 100%;"
+                        v-model="form.departDate"
+                        :picker-options="pickerOptions"
+                        @change="handleDate"></el-date-picker>
       </el-form-item>
       <el-form-item label>
-        <el-button style="width:100%;" type="primary" icon="el-icon-search" @click="handleSubmit">搜索</el-button>
+        <el-button style="width:100%;"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="handleSubmit">搜索</el-button>
       </el-form-item>
       <div class="reverse">
         <span @click="handleReverse">换</span>
@@ -60,7 +58,7 @@
 <script>
 import moment from "moment";
 export default {
-  data() {
+  data () {
     return {
       tabs: [
         { icon: "iconfont icondancheng", name: "单程" },
@@ -78,7 +76,7 @@ export default {
       destData: [], //用户输入到达城市，默认选择第一个
       pickerOptions: {
         // 禁用今天以前的日期
-        disabledDate(time) {
+        disabledDate (time) {
           return time.getTime() + 3600 * 1000 * 24 < Date.now();
         }
       }
@@ -86,7 +84,7 @@ export default {
   },
   methods: {
     // tab切换时触发
-    handleSearchTab(item, index) {
+    handleSearchTab (item, index) {
       if (index === 1) {
         this.$alert("暂不支持往返");
       }
@@ -94,7 +92,7 @@ export default {
 
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDepartSearch(value, cb) {
+    queryDepartSearch (value, cb) {
       if (!value) {
         this.departData = [];
         cb([]);
@@ -128,7 +126,7 @@ export default {
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDestSearch(value, cb) {
+    queryDestSearch (value, cb) {
       if (!value) {
         this.destData = [];
         cb([]);
@@ -141,13 +139,13 @@ export default {
     },
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {
+    handleDepartSelect (item) {
       this.form.departCity = item.value;
       this.form.departCode = item.sort;
     },
 
     // 出发城市失去焦点触发， 默认选中 第一个
-    handleDepartBlur() {
+    handleDepartBlur () {
       // 如果该输入框没有内容，则不执行后面的代码
       if (this.departData.length === 0) {
         return;
@@ -157,7 +155,7 @@ export default {
     },
 
     // 目标城市失去焦点触发， 默认选中 第一个
-    handleDestBlur() {
+    handleDestBlur () {
       if (this.destData.length === 0) {
         return;
       }
@@ -166,18 +164,18 @@ export default {
     },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {
+    handleDestSelect (item) {
       this.form.destCity = item.value;
       this.form.destCode = item.sort;
     },
 
     // 确认选择日期时触发
-    handleDate(value) {
+    handleDate (value) {
       this.form.departDate = moment(value).format("YYYY-MM-DD");
     },
 
     // 触发和目标城市切换时触发
-    handleReverse() {
+    handleReverse () {
       const { departCity, departCode, destCity, destCode } = this.form;
       this.form.departCity = destCity;
       this.form.departCode = destCode;
@@ -186,7 +184,7 @@ export default {
     },
 
     // 提交表单是触发
-    handleSubmit() {
+    handleSubmit () {
       if (!this.form.departCity) {
         this.$message.error("请输入出发城市");
         return;
@@ -199,6 +197,10 @@ export default {
         this.$message.error("请选择时间");
         return;
       }
+
+      // 把this.form保存到store中
+      this.$store.commit("air/setHistory", this.form)
+
       // 跳转到 /air/flights，保证该页面url的参数有5个参数
       this.$router.push({
         path: "/air/flights",
@@ -207,7 +209,7 @@ export default {
       });
     }
   },
-  mounted() {}
+  mounted () { }
 };
 </script>
 
@@ -264,7 +266,7 @@ export default {
   &:after,
   &:before {
     display: block;
-    content: "";
+    content: '';
     position: absolute;
     left: -35px;
     width: 25px;
@@ -298,7 +300,7 @@ export default {
     &:after,
     &:before {
       display: block;
-      content: "";
+      content: '';
       position: absolute;
       left: 10px;
       width: 1px;
