@@ -127,6 +127,8 @@ export default {
 
     // 发送手机验证码
     handleSendCaptcha () {
+      console.log(this.form);
+
       if (!this.form.contactPhone) {
         this.$message.error("手机号码不能为空")
         return;

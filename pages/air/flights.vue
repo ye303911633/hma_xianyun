@@ -90,6 +90,8 @@ export default {
       // 修改总条数
       this.total = this.flightsData.total;
     }); */
+    console.log(this.$route.query);
+
     // 请求机票列表接口
     this.getList()
   },
@@ -155,8 +157,8 @@ export default {
     // 每次url变化时候把pageIndex初始化为1
     this.pageIndex = 1;
     // 请求机票列表数据
-    this.getList();
     next();
+    this.getList();
   }
 }
 </script>
