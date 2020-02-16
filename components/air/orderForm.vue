@@ -10,7 +10,7 @@
           <el-form-item label="乘机人类型">
             <el-input placeholder="姓名"
                       class="input-with-select"
-                      v-model="item.username">
+                      v-model="item.username">3
               <el-select slot="prepend"
                          value="1"
                          placeholder="请选择">
@@ -83,6 +83,7 @@
                    class="submit"
                    @click="handleSubmit">提交订单</el-button>
       </div>
+      <span>{{allPrice}}</span>
     </div>
   </div>
 </template>
@@ -127,8 +128,7 @@ export default {
 
     // 发送手机验证码
     handleSendCaptcha () {
-      console.log(this.form);
-
+      // console.log(this.form);
       if (!this.form.contactPhone) {
         this.$message.error("手机号码不能为空")
         return;
@@ -197,10 +197,28 @@ export default {
           this.$message.error(item.errMessage);
         }
       })
+
       // 如果验证没通过，就直接返回
       if (!valid) return;
+
+      // 验证通过 把当前的form保存起来
+      console.log(this.form);
+      this.$store.commit('air/setUserFormList', this.form)
+
+
       // 调用提交订单的接口
       // console.log(this.form.insurances)
+      this.$axios({
+        url: "/airorders",
+        method: "POST",
+        data: this.form,
+        headers: {
+          // 必须要做token前面加上`Bearer `字符串，后面有一个空格的
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        this.$message.success("订单提交成功");
+      })
     },
 
     // 处理保险数据的
@@ -228,7 +246,37 @@ export default {
     }).then(res => {
       // 赋值给机票的详细信息
       this.infoData = res.data;
+      // 把infoData保存到store
+      this.$store.commit("air/setOrderDetail", this.infoData)
     })
+
+    console.log(this.$store.state.air.userFormList);
+  },
+  computed: {
+    // 总价格，展示在侧边栏组件
+    allPrice () {
+      // 先判断infoData是否有数据
+      if (!this.infoData.seat_infos) {
+        return;
+      }
+      let price = 0;
+      // 单价
+      price += this.infoData.seat_infos.org_settle_price;
+      // 基建燃油费
+      price += this.infoData.airport_tax_audlet;
+      // 保险
+      this.infoData.insurances.forEach(v => {
+        // 如果选中的id数组包含了当前的保险id，需要加上保险的价格 
+        if (this.form.insurances.indexOf(v.id) > -1) {
+          price += v.price;
+        }
+      });
+      // 人数的数量
+      price *= this.form.users.length;
+      // 把总价保存到store
+      this.$store.commit("air/setAllPrice", price)
+      return '';
+    }
   }
 }
 </script>
