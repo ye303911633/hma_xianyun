@@ -218,6 +218,16 @@ export default {
         }
       }).then(res => {
         this.$message.success("订单提交成功");
+
+        // 成功之后跳转至付款页
+        setTimeout(() => {
+          this.$router.push({
+            path: "/air/pay",
+            query: {
+              id: res.data.data.id  // 订单的id
+            }
+          })
+        }, 1300)
       })
     },
 
